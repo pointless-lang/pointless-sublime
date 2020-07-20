@@ -1,0 +1,56 @@
+%YAML 1.2
+---
+
+file_extensions:
+  - ptls
+
+scope: source.pointless
+
+contexts:
+  main:
+    - match: '\b(if|then|else|where|with|cond|case|and|or|not|in|as|true|false|for|when|yield|import|export|requires|throw|try|catch)\b'
+      scope: keyword.control.pointless
+
+    - match: '\b(true|false)\b'
+      scope: constant.languge.pointless
+
+    - match: '\b(assert|toArray|toNDArray|lessEq|lessThan|greaterEq|greaterThan|notFunc|notEq|eq|orFunc|andFunc|inFunc|any|all|lowers|uppers|alphas|digits|alNums|delKey|toDict|keys|vals|items|getDefault|format|compose|id|const|iterate|print|println|printFrame|printFrames|printLines|debug|readLines|randFloat|randRange|randChoice|getIndex|length|hasPrefix|getLabel|hasLabel|unwrap|wrap|wrapTuple|wrapObject|head|tail|at|last|slice|concat|concatMap|intersperse|repeat|take|drop|takeWhile|takeUntil|dropWhile|dropUntil|find|span|groupBy|map|filter|reduce|reduceFirst|scan|reverse|zip|zipN|eager|isEmpty|toList|enumerate|sum|range|toInt|floor|ceil|toFloat|round|pi|euler|abs|pow|mul|div|mod|add|sub|max|min|minimum|maximum|toSet|addElem|delElem|union|intersection|difference|symDifference|repr|show|sort|join|concatStrings|split|toTuple|getType|hasType|is|shuffle|product|asin|acos|atan|atan2|sin|cos|tan|ln|logBase|argmin|argmax|unwrapTuple|unwrapObject|zeroArray|notIs|count|readFile|readFileLines|toLower|toUpper)\b'
+      scope: support.function.builtin.pointless
+
+    - match: '\b(output|export)\b'
+      scope: support.function.pointless
+
+    - match: '(--)(.*)$'
+      captures:
+        1: punctuation.definition.comment
+        2: comment.line.pointless
+
+    - match: '(\+|-|\*|\/|\*\*|%|\+=|-=|\*=|\/=|\*\*=|%=|\|>|=|==|!=|<|>|<=|>=|=>|\$|\+\+)'
+      scope: keyword.operator.pointless
+
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.pointless
+
+    - match: '[:,]'
+      scope: punctuation.separator
+
+    - match: ';'
+      scope: punctuation.terminator
+
+    - match: '\.'
+      scope: punctuation.accessor
+
+    - match: '\b[A-Z][a-zA-Z0-9]*\b'
+      scope: constant.other.pointless
+
+    - match: '"'
+      scope: punctuation.definition.string.begin.pointless
+      push:
+        - meta_scope: string.quoted.double.pointless
+        - match: '"'
+          scope: punctuation.definition.string.end.pointless
+          pop: true
+        - match: '\\.'
+          scope: constant.character.escape.pointless
+        - match: '\n'
+          scope: invalid.illegal.pointless
