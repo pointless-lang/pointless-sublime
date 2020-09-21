@@ -43,6 +43,16 @@ contexts:
     - match: '\b[A-Z][a-zA-Z0-9]*\b'
       scope: constant.other.pointless
 
+    - match: '"""'
+      scope: punctuation.definition.string.begin.pointless
+      push:
+        - meta_scope: string.quoted.double.pointless
+        - match: '"""'
+          scope: punctuation.definition.string.end.pointless
+          pop: true
+        - match: '\\.'
+          scope: constant.character.escape.pointless
+
     - match: '"'
       scope: punctuation.definition.string.begin.pointless
       push:
