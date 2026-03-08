@@ -6,61 +6,188 @@ file_extensions:
 
 scope: source.pointless
 
+variables:
+  ident: '[a-zA-Z][a-zA-Z0-9]*'
+  reserved: '(and|arg|break|case|continue|do|elif|else|end|false|fn|for|if|import|in|match|none|not|or|return|then|true|while)'
+
 contexts:
   main:
-    - match: '\b(if|then|else|where|with|cond|case|and|or|not|in|as|true|false|for|when|yield|import|export|requires|throw|try|catch|upval)\b'
-      scope: keyword.control.pointless
+    - include: comment
+    - include: number
+    - include: string
+    - include: rawString
+    - include: dateTime
+    - include: field
+    - include: function
+    - include: keyword
+    - include: module
+    - include: builtin
+    - include: constant
+    - include: pipe
+    - include: operator
+    - include: definition
+    - include: punctuation
+    - include: call
+    - include: name
 
-    - match: '\b(true|false)\b'
-      scope: constant.languge.pointless
+  comment:
+    - match: '--.*'
+      scope: comment.pointless
 
-    - match: '\b(assert|toArray|toNDArray|lessEq|lessThan|greaterEq|greaterThan|notFunc|notEq|eq|orFunc|andFunc|inFunc|any|all|lowers|uppers|alphas|digits|alNums|delKey|toDict|keys|vals|items|getDefault|format|compose|id|const|iterate|print|println|printFrame|printFrames|printLines|debug|readLines|randFloat|randRange|randChoice|getIndex|length|hasPrefix|getLabel|hasLabel|unwrap|wrap|wrapTuple|wrapObject|head|tail|at|last|slice|concat|concatMap|intersperse|repeat|take|drop|takeWhile|takeUntil|dropWhile|dropUntil|find|span|groupBy|map|filter|reduce|reduceFirst|scan|reverse|zip|zipN|eager|isEmpty|toList|enumerate|sum|range|toInt|floor|ceil|toFloat|round|pi|euler|abs|pow|mul|div|mod|add|sub|max|min|minimum|maximum|toSet|addElem|delElem|union|intersection|difference|symDifference|repr|show|sort|join|concatStrings|split|toTuple|getType|hasType|is|shuffle|product|asin|acos|atan|atan2|sin|cos|tan|ln|logBase|argmin|argmax|unwrapTuple|unwrapObject|zeroArray|notIs|count|readFile|readFileLines|toLower|toUpper|apply|composeAll|fromItems)\b'
-      scope: support.function.builtin.pointless
-
-    - match: '\b(output|export)\b'
-      scope: support.function.pointless
-
-    - match: '(--)(.*)$'
-      captures:
-        1: punctuation.definition.comment
-        2: comment.line.pointless
-
-    - match: '(\+|-|\*|\/|\*\*|%|\+=|-=|\*=|\/=|\*\*=|%=|\|>|=|==|!=|<|>|<=|>=|=>|\$|\+\+)'
-      scope: keyword.operator.pointless
-
-    - match: '\b(-)?[0-9.]+\b'
-      scope: constant.numeric.pointless
-
-    - match: '[:,]'
-      scope: punctuation.separator
-
-    - match: ';'
-      scope: punctuation.terminator
-
-    - match: '\.'
-      scope: punctuation.accessor
-
-    - match: '\b[A-Z][a-zA-Z0-9]*\b'
-      scope: constant.other.pointless
-
-    - match: '"""'
-      scope: punctuation.definition.string.begin.pointless
-      push:
-        - meta_scope: string.quoted.double.pointless
-        - match: '"""'
-          scope: punctuation.definition.string.end.pointless
-          pop: true
-        - match: '\\.'
-          scope: constant.character.escape.pointless
-
+  string:
     - match: '"'
       scope: punctuation.definition.string.begin.pointless
       push:
         - meta_scope: string.quoted.double.pointless
+
+        - match: '\${{ident}}(\.{{ident}})*'
+          scope: constant.other.placeholder.pointless
+
+        - match: '\$\({{ident}}(\.{{ident}})*\)'
+          scope: constant.other.placeholder.pointless
+
+        - match: '\\["\\nrt]|\\u{[\dA-Fa-f]{1,6}}'
+          scope: constant.character.escape.pointless
+
+        - match: '\\.'
+          scope: invalid.illegal.invalid-escape.pointless
+
         - match: '"'
           scope: punctuation.definition.string.end.pointless
           pop: true
-        - match: '\\.'
-          scope: constant.character.escape.pointless
-        - match: '\n'
+
+  rawString:
+    - match: '(r)((#*)")'
+      captures:
+        1: storage.type.string.pointless
+        2: punctuation.definition.string.begin.pointless
+      push:
+        - meta_scope: string.quoted.double.raw.pointless
+        - match: '"\3'
+          scope: punctuation.definition.string.end.pointless
+          pop: true
+
+  dateTime:
+    - match: '`((\d{4}-\d\d-\d\d[T ])?\d\d:\d\d(:\d\d(\.\d+)?)?(Z|[+\-]\d\d:\d\d)?|(\d{4}-\d\d-\d\d))`'
+      scope: constant.numeric.pointless
+
+    - match: '`[^`]*`'
+      scope: invalid.illegal.pointless
+
+  number:
+    - match: '\b\d*\.?\d+([eE][+-]?\d+)?\b'
+      scope: constant.numeric.pointless
+
+  field:
+    - match: '{{ident}}(?=:)'
+      scope: variable.name.pointless
+
+    - match: '(\.)({{ident}})(?=\()'
+      captures:
+        1: punctuation.accessor
+        2: variable.function.pointless
+
+    - match: '(\.)({{ident}})'
+      captures:
+        1: punctuation.accessor
+        2: variable.name.pointless
+
+  keyword:
+    - match: '(and|not|or|in|!in)\b'
+      scope: keyword.operator.pointless
+
+    - match: '(for)\s+({{ident}})\s+(in)'
+      captures:
+        1: keyword.control.pointless
+        3: keyword.control.pointless
+
+    - match: '\b(arg|break|case|continue|do|elif|else|end|fn|for|if|import|match|return|then|while)\b'
+      scope: keyword.control.pointless
+
+  module:
+    - match: '\b(Async|Bool|Char|Console|Err|Fs|List|Math|Obj|Overloads|Panic|Rand|Re|Ref|Set|Str|Table|Test)\b'
+      scope: support.type.builtin.pointless
+
+  builtin:
+    - match: '\b(assert|chars|clear|drop|dropLast|has|isEmpty|join|len|max|min|print|prompt|push|range|remove|reverse|round|roundTo|select|sleep|sort|sortBy|sortDesc|sortDescBy|span|split|sum|take|takeLast)\b'
+      scope: support.type.builtin.pointless
+
+  constant:
+    - match: '\b(true|false)\b'
+      scope: constant.language.boolean.pointless
+
+    - match: '\bnone\b'
+      scope: constant.language.pointless
+
+  function:
+    - match: '(fn)(:? +({{ident}}))?(?=\()'
+      captures:
+        1: keyword.declaration.function.pointless
+        2: entity.name.function.pointless
+      push:
+        - match: '\b{{reserved}}\b'
           scope: invalid.illegal.pointless
+        
+        - match: '{{ident}}'
+          scope: variable.parameter.pointless
+
+        - match: ','
+          scope: punctuation.separator.pointless
+
+        - match: '\('
+          scope: punctuation.section.parameters.begin.pointless
+
+        - match: '\)'
+          scope: punctuation.section.parameters.end.pointless
+          pop: true
+
+        - match: '\S'
+          scope: invalid.illegal.pointless
+
+  pipe:
+    - match: '\|=|\$=|\?=|\||\$|\?'
+      scope: keyword.operator.pointless
+      push:
+      - match: '(?=\b{{reserved}}\b)'
+        pop: true
+
+      - include: module
+
+      - match: '{{ident}}(?=\.)'
+        scope: variable.name.pointless
+
+      - match: '{{ident}}\s*(?=[()\],;\n\|$?:}]|$|--|elif\b|else\b|end\b)'
+        scope: variable.function.pointless
+        pop: true
+
+      - match: '\.'
+        scope: punctuation.accessor.pointless
+
+      - match: '(?=\S)'
+        pop: true
+
+  operator:
+    - match: '\?|\+|-|/|//|\*\*|\*|%|==|!=|>=|>|<=|<'
+      scope: keyword.operator.pointless
+
+  definition:
+    - match: '=|\+=|-=|\*=|/=|//=|\*\*=|%='
+      scope: keyword.operator.assignment.pointless
+
+  punctuation:
+    - match: '\.'
+      scope: punctuation.accessor
+
+    - match: '[,:]'
+      scope: punctuation.separator.pointless
+
+    - match: '[\[\]{}()]'
+      scope: punctuation.section.pointless
+
+  call:
+    - match: '{{ident}}(?=\s*\()'
+      scope: variable.function.pointless
+
+  name:
+    - match: '{{ident}}'
+      scope: variable.name.pointless

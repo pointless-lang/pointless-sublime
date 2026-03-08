@@ -1,0 +1,161 @@
+%YAML 1.2
+---
+
+file_extensions:
+  - ptls
+
+scope: source.pointless
+
+variables:
+  skip: '(?:(--)(.*)$|\s)*'
+
+contexts:
+  prototype:
+    - include: comment
+
+  comment:
+    - match: '(--)(.*)$'
+      scope: comment.pointless
+
+  main:
+    - include: boolean
+    - include: none
+    - include: keyword
+    - include: string
+    - include: lambda
+    - include: function-def
+    - include: def
+    - include: call
+    - include: pipe
+    - include: name
+    - include: number
+    - include: operator
+    - include: punctuation
+    - include: invalid
+
+  boolean:
+    - match: '\b(true|false)\b'
+      scope: constant.language.boolean.pointless
+
+  none:
+    - match: '\bnone\b'
+      scope: constant.language.pointless
+
+  keyword:
+    - match: '\b(and|in|not|or)\b'
+      scope: keyword.operator.pointless
+
+    - match: '\b(do|else|if|then)\b'
+      scope: keyword.control.pointless
+
+  string:
+    - match: '"'
+      scope: punctuation.definition.string.begin.pointless
+      push:
+        - meta_include_prototype: false
+        - meta_scope: string.quoted.double.pointless
+
+        - match: '"'
+          scope: punctuation.definition.string.end.pointless
+          pop: true
+
+        - match: '\\["\\nrt]|\\u[\dA-Fa-f]{4}'
+          scope: constant.character.escape.pointless
+
+        - match: '\\u.{0,4}|\\.'
+          scope: invalid.illegal.pointless
+
+  lambda:
+    - match: '(?=\((?:[a-zA-Z_\w,]|(?:(--)(.*)$|\s)*)*\)(?:(--)(.*)$|\s)*=>)'
+      push: lambda-helper
+
+    - match: '(?=\w+\s*=>)'
+      push: lambda-helper
+
+  lambda-helper:
+    - match: '[a-zA-Z_]\w*'
+      scope: variable.parameter.pointless
+
+    - match: '=>'
+      scope: keyword.declaration.function.arrow.pointless
+      pop: true
+
+    - match: ','
+      scope: punctuation.separator.pointless
+
+    - match: '\('
+      scope: punctuation.section.parameters.begin.pointless
+
+    - match: '\)'
+      scope: punctuation.section.parameters.end.pointless
+
+    - match: '[^\s]'
+      scope: invalid.illegal.pointless
+
+  def:
+    - match: '([a-zA-Z_]\w*)\s*(=)(?!>)\s*'
+      captures:
+        1: variable.name.pointless
+        2: keyword.operator.assignment.pointless
+
+  function-def:
+    - match: '^\s*([a-zA-Z_]\w*)\s*(?=\(([a-zA-Z_]\w*|,|\s)*\)\s*=(?!>))'
+      captures:
+        1: entity.name.function.pointless
+      push:
+        - match: '\b[a-zA-Z_]\w*\b'
+          scope: variable.parameter.pointless
+
+        - match: '='
+          scope: keyword.operator.assignment.pointless
+          pop: true
+
+        - match: ','
+          scope: punctuation.separator.pointless
+
+        - match: '\('
+          scope: punctuation.section.parameters.begin.pointless
+
+        - match: '\)'
+          scope: punctuation.section.parameters.end.pointless
+
+        - match: '[^\s]'
+          scope: invalid.illegal.pointless
+
+  call:
+    - match: '\b[a-zA-Z_]\w*\s*(?=\()'
+      scope: variable.function.pointless
+
+  pipe:
+    - match: '(?<=\|>)(?:\s*(?:[a-zA-Z_]\w*)\.)*\s*([a-zA-Z_]\w*)\s*(?!\[)'
+      captures:
+        1: variable.function.pointless
+
+  name:
+    - match: '\b[a-zA-Z_]\w*\b'
+      scope: variable.name.pointless
+
+  number:
+    - match: '\b(\d+(\.\d+)?|\.\d+)(e-?\d+)?\b'
+      scope: constant.numeric.pointless
+
+  operator:
+    - match: '\|>|>=|>|==|<=|<|\/|-|\+|\*\*|\*|%|!='
+      scope: keyword.operator.pointless
+
+  punctuation:
+    - match: '\.'
+      scope: punctuation.accessor
+
+    - match: '[:,]'
+      scope: punctuation.separator.pointless
+
+    - match: '!?[\[\]{}()]'
+      scope: punctuation.section.pointless
+
+    - match: ';'
+      scope: punctuation.terminator.pointless
+
+  invalid:
+    - match: '[^\s]'
+      scope: invalid.illegal.pointless
