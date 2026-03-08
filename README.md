@@ -2,7 +2,7 @@
 
 Pointless syntax support for [Sublime Text](https://www.sublimetext.com/)
 
-Available as package `Pointless` on [Package Control](https://packagecontrol.io/)
+Available as package `Pointless` on [Package Control](https://packagecontrol.io/packages/Pointless)
 
 Language homepage: [https://pointless.dev](https://pointless.dev)
 
