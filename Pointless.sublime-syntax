@@ -93,7 +93,7 @@ contexts:
         2: variable.name.pointless
 
   keyword:
-    - match: '(and|not|or|in|!in)\b'
+    - match: '(and|in|not|not in|or)\b'
       scope: keyword.operator.pointless
 
     - match: '(for)\s+({{ident}})\s+(in)'
@@ -105,11 +105,11 @@ contexts:
       scope: keyword.control.pointless
 
   module:
-    - match: '\b(Async|Bool|Char|Console|Err|Fs|List|Math|Obj|Overloads|Panic|Rand|Re|Ref|Set|Str|Table|Test)\b'
+    - match: '\b(Async|Bool|Char|Console|Err|Fs|List|Math|Obj|Overloads|Panic|Rand|Re|Ref|Set|Str|Sys|Table|Test)\b'
       scope: support.type.builtin.pointless
 
   builtin:
-    - match: '\b(assert|chars|clear|drop|dropLast|has|isEmpty|join|len|max|min|print|prompt|push|range|remove|reverse|round|roundTo|select|sleep|sort|sortBy|sortDesc|sortDescBy|span|split|sum|take|takeLast)\b'
+    - match: '\b(assert|chars|drop|dropLast|isEmpty|join|len|max|min|parse|print|prompt|push|range|remove|reverse|round|roundTo|select|sleep|sort|sortBy|sortDesc|sortDescBy|span|split|sum|take|takeLast)\b'
       scope: support.type.builtin.pointless
 
   constant:
@@ -145,7 +145,7 @@ contexts:
           scope: invalid.illegal.pointless
 
   pipe:
-    - match: '\|=|\$=|\?=|\||\$|\?'
+    - match: '\|=|\$=|\?=|#=|\||\$|\?|#(?!\{)'
       scope: keyword.operator.pointless
       push:
       - match: '(?=\b{{reserved}}\b)'
