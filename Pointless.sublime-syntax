@@ -93,7 +93,7 @@ contexts:
         2: variable.name.pointless
 
   keyword:
-    - match: '(and|in|not|not in|or)\b'
+    - match: '(and|not in|in|not|or)\b'
       scope: keyword.operator.pointless
 
     - match: '(for)\s+({{ident}})\s+(in)'
@@ -120,7 +120,7 @@ contexts:
       scope: constant.language.pointless
 
   function:
-    - match: '(fn)(:? +({{ident}}))?(?=\()'
+    - match: '(fn)( +({{ident}}))?(?=\()'
       captures:
         1: keyword.declaration.function.pointless
         2: entity.name.function.pointless
@@ -167,11 +167,11 @@ contexts:
         pop: true
 
   operator:
-    - match: '\?|\+|-|/|//|\*\*|\*|%|==|!=|>=|>|<=|<'
+    - match: '\?\?|\?|\+|-|/|//|\*\*|\*|%|==|!=|>=|>|<=|<'
       scope: keyword.operator.pointless
 
   definition:
-    - match: '=|\+=|-=|\*=|/=|//=|\*\*=|%='
+    - match: '=|\?\?=|\+=|-=|\*=|/=|//=|\*\*=|%='
       scope: keyword.operator.assignment.pointless
 
   punctuation:
