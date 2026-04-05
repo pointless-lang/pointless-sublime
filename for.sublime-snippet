@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+for ${1:item} in ${2:values} do
+  ${3}
+end
+]]></content>
+	<tabTrigger>for</tabTrigger>
+	<scope>source.pointless</scope>
+</snippet>

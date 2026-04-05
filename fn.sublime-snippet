@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+fn ${1:name}(${2})
+  ${3}
+end
+]]></content>
+	<tabTrigger>fn</tabTrigger>
+	<scope>source.pointless</scope>
+</snippet>

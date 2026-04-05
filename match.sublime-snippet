@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+match ${1:value}
+  case ${2:option} then ${3}
+  else ${4}
+end
+]]></content>
+	<tabTrigger>match</tabTrigger>
+	<scope>source.pointless</scope>
+</snippet>

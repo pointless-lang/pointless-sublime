@@ -1,0 +1,7 @@
+<snippet>
+	<content><![CDATA[
+${1:condition} then ${2} else ${3}
+]]></content>
+	<tabTrigger>then</tabTrigger>
+	<scope>source.pointless</scope>
+</snippet>
