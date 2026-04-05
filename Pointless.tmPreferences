@@ -7,7 +7,13 @@
 	<key>settings</key>
 	<dict>
 		<key>increaseIndentPattern</key>
-		<string>fn \w+\([^)]*\)|.*\bthen\b|.*\belse\b|[\(\[\{]|.*\bdo\b</string>
+		<string><![CDATA[.*\bfn\b.*\((?!.*\bend\b)|.*\bif\b(?!.*\bthen\b)|.*\bmatch\b(?!.*\bend\b)|.*\bthen\b(?!\s*\S)|^\s*else\b(?!\s*\S)|.*\bdo\b(?!.*\bend\b)|^.*[(\[{](?!.*[)\]}])]]></string>
+		<key>decreaseIndentPattern</key>
+		<string><![CDATA[^\s*(end\b|elif\b|then\b(?!\s*\S)|else\b(?!\s*\S))]]></string>
+		<key>foldingStartMarker</key>
+		<string><![CDATA[^.*\b(fn|if)\b((?!\b(end|then)\b).)*$|^.*\b(do|then|match)\b((?!\bend\b).)*$|^\s*else\s*$]]></string>
+		<key>foldingStopMarker</key>
+		<string><![CDATA[^\s*end\b]]></string>
 		<key>shellVariables</key>
 		<array>
 			<dict>
