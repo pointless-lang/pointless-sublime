@@ -16,7 +16,6 @@ contexts:
     - include: number
     - include: string
     - include: rawString
-    - include: dateTime
     - include: field
     - include: function
     - include: keyword
@@ -57,22 +56,13 @@ contexts:
           pop: true
 
   rawString:
-    - match: '(r)((#*)")'
-      captures:
-        1: storage.type.string.pointless
-        2: punctuation.definition.string.begin.pointless
+    - match: '((#*)`)'
+      scope: punctuation.definition.string.begin.pointless
       push:
         - meta_scope: string.quoted.double.raw.pointless
-        - match: '"\3'
+        - match: '`\2'
           scope: punctuation.definition.string.end.pointless
           pop: true
-
-  dateTime:
-    - match: '`((\d{4}-\d\d-\d\d[T ])?\d\d:\d\d(:\d\d(\.\d+)?)?(Z|[+\-]\d\d:\d\d)?|(\d{4}-\d\d-\d\d))`'
-      scope: constant.numeric.pointless
-
-    - match: '`[^`]*`'
-      scope: invalid.illegal.pointless
 
   number:
     - match: '\b\d+(\.\d+)?([eE][+-]?\d+)?\b'
