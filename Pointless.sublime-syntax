@@ -8,7 +8,7 @@ scope: source.pointless
 
 variables:
   ident: '[a-zA-Z][a-zA-Z0-9]*'
-  reserved: '(and|arg|break|case|continue|do|elif|else|end|false|fn|for|if|import|in|match|none|not|or|return|then|true|while)'
+  reserved: '(and|arg|asset|break|case|continue|do|elif|else|end|false|fn|for|if|import|in|match|none|not|or|return|then|true|while)'
 
 contexts:
   main:
@@ -93,7 +93,7 @@ contexts:
         1: keyword.control.pointless
         2: keyword.control.pointless
 
-    - match: '\b(arg|break|case|continue|do|elif|else|end|fn|for|if|import|match|return|then|while)\b'
+    - match: '\b(arg|asset|break|case|continue|do|elif|else|end|fn|for|if|import|match|return|then|while)\b'
       scope: keyword.control.pointless
 
   module:
